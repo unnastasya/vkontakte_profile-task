@@ -13,11 +13,16 @@ export const useInput = (initialValue, validations) => {
 	const onBlur = (e) => {
 		setIsDirty(true);
 	};
+
+	const clear = () => {
+		setValue(initialValue);
+	};
 	return {
 		value,
 		onChange,
 		onBlur,
-        isDirty,
-        ...valid
+        clear,
+		isDirty,
+		...valid,
 	};
 };

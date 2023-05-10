@@ -14,6 +14,7 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 
 import "./BookingForm.css";
 import { useInput } from "../hooks/useInput.js";
+import dayjs from "dayjs";
 import { useValidation } from "@mui/x-date-pickers/internals";
 
 const ITEM_HEIGHT = 48;
@@ -27,24 +28,66 @@ const MenuProps = {
 	},
 };
 
-export function BookingForm2() {
+export function BookingForm() {
 	const tower = useInput("", { isEmpty: true });
+	const floor = useInput("", { isEmpty: true });
+	const conferenceRoom = useInput("", { isEmpty: true });
+	const dateStart = useInput(dayjs(), { isEmpty: true });
+	const timeStart = useInput(dayjs(), { isEmpty: true });
+	const dateFinish = useInput(dayjs(), { isEmpty: true });
+	const timeFinish = useInput(dayjs(), { isEmpty: true });
+	const comment = useInput("", { isEmpty: true });
+	const [isValid, setIsValid] = useState(true);
+
+	useEffect(() => {
+		setIsValid(
+			tower.inputValid &&
+				floor.inputValid &&
+				conferenceRoom.inputValid &&
+				comment.inputValid &&
+				dateStart.inputValid &&
+				timeStart.inputValid &&
+				dateFinish.inputValid &&
+				timeFinish.inputValid
+		);
+	}, [
+		tower.inputValid,
+		floor.inputValid,
+		conferenceRoom.inputValid,
+		comment.inputValid,
+		dateStart.inputValid,
+		timeStart.inputValid,
+		dateFinish.inputValid,
+		timeFinish.inputValid,
+	]);
 
 	const postForm = (e) => {
 		e.preventDefault();
-		if (tower.inputValid) {
+		if (isValid) {
 			const bookingData = {
 				towerValue: tower.value,
+				floorValue: floor.value,
+				conferenceRoomValue: conferenceRoom.value,
+				commentValue: comment.value,
+				dateStart: dateStart.value,
+				dateFinish: dateFinish.value,
+				timeStart: timeStart.value,
+				timeFinish: timeFinish.value,
 			};
 
 			console.log(JSON.stringify(bookingData));
-		} else {
-			if (!tower.isDirty) tower.isDirty = true;
 		}
 	};
 
 	const clearForm = () => {
-		tower.value = "";
+		tower.clear();
+		floor.clear();
+		conferenceRoom.clear();
+		comment.clear();
+		dateStart.clear();
+		timeStart.clear();
+		dateFinish.clear();
+		timeFinish.clear();
 	};
 
 	return (
@@ -59,6 +102,7 @@ export function BookingForm2() {
 						margin: "10px 0",
 					}}
 					fullWidth
+					error={tower.isDirty && Boolean(tower.value == "")}
 				>
 					<InputLabel>Выберите башню</InputLabel>
 					<Select
@@ -73,15 +117,10 @@ export function BookingForm2() {
 						<MenuItem value={"Б"}>Б</MenuItem>
 					</Select>
 					{tower.isDirty && tower.isEmpty && (
-						<p style={{ color: "red" }}>
-							Поле не может быть пустым
-						</p>
-					)}
-					{/* {towerValueError && towerValueDirty && (
 						<Alert className="error_field" severity="error">
-							{towerValueError}
+							Пожалуйста, выберите башню
 						</Alert>
-					)} */}
+					)}
 				</FormControl>
 
 				<FormControl
@@ -89,15 +128,15 @@ export function BookingForm2() {
 						margin: "10px 0",
 					}}
 					fullWidth
-					// error={floorValueDirty && Boolean(floorValueError.length)}
+					error={floor.isDirty && Boolean(floor.value == "")}
 				>
 					<InputLabel>Выберите этаж</InputLabel>
 					<Select
 						name="floor"
-						// value={floorValue}
+						value={floor.value}
 						label="Выберите этаж"
-						// onBlur={(e) => handleBlur(e)}
-						// onChange={(e) => handleChangeFloorValue(e)}
+						onBlur={(e) => floor.onBlur(e)}
+						onChange={(e) => floor.onChange(e)}
 						MenuProps={MenuProps}
 					>
 						{floorOptions.map((floor) => {
@@ -108,11 +147,11 @@ export function BookingForm2() {
 							);
 						})}
 					</Select>
-					{/* {floorValueError && floorValueDirty && (
+					{floor.isDirty && floor.isEmpty && (
 						<Alert className="error_field" severity="error">
-							{floorValueError}
+							Пожалуйста, выберите этаж
 						</Alert>
-					)} */}
+					)}
 				</FormControl>
 
 				<FormControl
@@ -120,17 +159,17 @@ export function BookingForm2() {
 						margin: "10px 0",
 					}}
 					fullWidth
-					// error={
-					// 	conferenceValueDirty &&
-					// 	Boolean(conferenceValueError.length)
-					// }
+					error={
+						conferenceRoom.isDirty &&
+						Boolean(conferenceRoom.value == "")
+					}
 				>
 					<InputLabel>Выберите номер переговорки</InputLabel>
 					<Select
-						// value={conferenceRoomValue}
+						value={conferenceRoom.value}
 						label="Выберите номер переговорки"
-						// onBlur={(e) => handleBlur(e)}
-						// onChange={(e) => handleChangeConferenceRoomValue(e)}
+						onBlur={(e) => conferenceRoom.onBlur(e)}
+						onChange={(e) => conferenceRoom.onChange(e)}
 						MenuProps={MenuProps}
 					>
 						{conferenceRoomOptions.map((room) => {
@@ -141,41 +180,77 @@ export function BookingForm2() {
 							);
 						})}
 					</Select>
-					{/* {conferenceValueError && conferenceValueDirty && (
+					{conferenceRoom.isDirty && conferenceRoom.isEmpty && (
 						<Alert className="error_field" severity="error">
-							{conferenceValueError}
+							Пожалуйста, выберите номер переговорки
 						</Alert>
-					)} */}
+					)}
 				</FormControl>
 
 				<div className="date_time_block">
 					<div className="datestart">
 						<DatePicker
-							label="Дата старт"
-							// value={timeStartValue}
-							// onChange={(newValue) =>
-							// 	handleChangeTimeStartValue(newValue)
-							// }
+							label="Дата начала"
+							value={dateStart.value}
+							onBlur={(e) => dateStart.onBlur(e)}
+							onChange={(newValue) =>
+								dateStart.onChange(newValue)
+							}
 						/>
+						{dateStart.isDirty && dateStart.isEmpty && (
+							<Alert className="error_field" severity="error">
+								Пожалуйста, выберите дату начала
+							</Alert>
+						)}
 
-						<TimePicker label="время старт" />
+						<TimePicker
+							label="время начала"
+							value={timeStart.value}
+							onBlur={(e) => timeStart.onBlur(e)}
+							onChange={(newValue) =>
+								timeStart.onChange(newValue)
+							}
+						/>
+						{timeStart.isDirty && timeStart.isEmpty && (
+							<Alert className="error_field" severity="error">
+								Пожалуйста, выберите время начала
+							</Alert>
+						)}
 					</div>
 					<div className="datefinish">
 						<DatePicker
-							label="Дата финиш"
-							// value={timeFinishValue}
-							// onChange={(newValue) =>
-							// 	handleChangeTimeFinishValue(newValue)
-							// }
+							label="Дата окончания"
+							value={dateFinish.value}
+							onBlur={(e) => dateFinish.onBlur(e)}
+							onChange={(newValue) =>
+								dateFinish.onChange(newValue)
+							}
 						/>
+						{dateFinish.isDirty && dateFinish.isEmpty && (
+							<Alert className="error_field" severity="error">
+								Пожалуйста, выберите дату окончания
+							</Alert>
+						)}
 
-						<TimePicker label="время финиш" />
+						<TimePicker
+							label="время окончания"
+							value={timeFinish.value}
+							onBlur={(e) => timeFinish.onBlur(e)}
+							onChange={(newValue) =>
+								timeFinish.onChange(newValue)
+							}
+						/>
+						{timeFinish.isDirty && timeFinish.isEmpty && (
+							<Alert className="error_field" severity="error">
+								Пожалуйста, выберите время окончания
+							</Alert>
+						)}
 					</div>
 				</div>
 
 				<TextField
-					// value={undefined || commentValue}
-					// onChange={(e) => handleChangeCommentValue(e)}
+					value={comment.value}
+					onChange={(e) => comment.onChange(e)}
 					sx={{
 						margin: "10px 0",
 					}}
@@ -189,6 +264,7 @@ export function BookingForm2() {
 						className="BookingForm__button"
 						type="submit"
 						variant="contained"
+						disabled={!isValid}
 					>
 						Отправить
 					</Button>
