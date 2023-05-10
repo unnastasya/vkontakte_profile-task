@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/vkontakte_profile-task/static/css/main.c2e4a99d.css",
+    "main.js": "/vkontakte_profile-task/static/js/main.68e37158.js",
+    "index.html": "/vkontakte_profile-task/index.html",
+    "main.c2e4a99d.css.map": "/vkontakte_profile-task/static/css/main.c2e4a99d.css.map",
+    "main.68e37158.js.map": "/vkontakte_profile-task/static/js/main.68e37158.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c2e4a99d.css",
+    "static/js/main.68e37158.js"
+  ]
+}
