@@ -1,0 +1,44 @@
+.form_container {
+	width: 80vw;
+	min-height: 300px;
+	padding: 30px 20px;
+}
+
+.BookingForm__formControl {
+	margin: 10px 0;
+}
+
+
+@media (min-width: 641px) {
+	.buttons_block {
+		display: flex;
+		justify-content: space-between;
+	}
+	.BookingForm__button {
+		width: 35vw;
+		height: 50px;
+	}
+	.date_time_block {
+		display: flex;
+		justify-content: space-between;
+	}
+}
+
+@media (max-width: 640px) {
+	.buttons_block {
+		height: 110px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.BookingForm__button {
+		width: 80vw;
+		height: 50px;
+	}
+	.date_time_block {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+}
